@@ -1,0 +1,11 @@
+{
+  "LoginScreen": {
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "register": "Register",
+    "loginError": "Login Error",
+    "loginErrorMessage": "Invalid email or password"
+  }
+}
