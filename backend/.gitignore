@@ -1,27 +1,3 @@
-node_modules
-dist
-out
-.DS_Store
-*.log*
-
-
-./frontend/node_modules
-./frontend/dist
-./frontend/out
-./frontend/.DS_Store
-./frontend/*.log*
-./frontend/build
-
-./backend/node_modules
-./backend/dist
-./backend/out
-./backend/.DS_Store
-./backend/*.log*
-./backend/.env
-./backend/pgdata
-./backend/data
-
-
 # compiled output
 /dist
 /node_modules
@@ -80,4 +56,3 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 pgdata
-
