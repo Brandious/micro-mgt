@@ -13,13 +13,13 @@ import { WorkModule } from './work/work.module';
 
 @Module({
   imports: [
-    AuthModule,
-    UsersModule,
-    DatabaseModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
     }),
+    AuthModule,
+    UsersModule,
+    DatabaseModule,
     TeamsModule,
     ProjectsModule,
     TasksModule,
