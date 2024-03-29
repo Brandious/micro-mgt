@@ -5,13 +5,21 @@ export const useStyles = makeStyles(() => ({
     // background: 'red',
     // display: 'flex',
     height: '100%',
-    flex: 0.75
+    flex: 0.75,
+
+    '@media (max-width: 768px)': {
+      flex: 1
+    }
   },
   rootGreen: {
     background: 'rgba(0, 128, 0, 0.8)',
     // display: 'flex',xw
     height: '100%',
-    flex: 1
+    flex: 1,
+
+    '@media (max-width: 768px)': {
+      flex: 0.75
+    }
   },
   center: {
     display: 'flex',

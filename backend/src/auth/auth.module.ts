@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { jwtConstants } from './constants';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
+import { WsJwtStrategy } from './strategies/ws-jwt.strategy';
 
 @Module({
   imports: [
@@ -16,7 +17,12 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
       signOptions: { expiresIn: '60s' },
     }),
   ],
-  providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],
+  providers: [
+    AuthService,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    WsJwtStrategy,
+  ],
   controllers: [AuthController],
   exports: [AuthService],
 })

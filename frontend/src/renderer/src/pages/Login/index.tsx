@@ -10,7 +10,13 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     height: '100vh',
     padding: 0,
-    margin: 0
+    margin: 0,
+
+    '@media (max-width: 768px)': {
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }
   }
 }))
 
