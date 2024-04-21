@@ -10,14 +10,11 @@ export const Dashboard = (): JSX.Element => {
         mt: 2
       }}
     >
-      <Typography variant="h5">Dashboard</Typography>
-
       <Box
         sx={{
           mt: 2,
           display: 'flex',
           flexDirection: 'row',
-          // justifyContent: 'space-around',
           gap: 2,
           flexWrap: 'wrap'
         }}

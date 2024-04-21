@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Param,
   Put,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -16,6 +18,20 @@ import { RolesGuard } from 'src/auth/strategies/roles.guard';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Get()
+  async findAll() {
+    return this.usersService.findAll();
+  }
+
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Get('/self')
+  async findSelf(@Request() req) {
+    console.log(req.user);
+
+    return this.usersService.findCurrentUser(req.user.id);
+  }
 
   @HasRoles(Role.MANAGER)
   @UseGuards(AccessTokenGuard, RolesGuard)

@@ -1,13 +1,16 @@
 import { Box, Button, TextField, Typography } from '@material-ui/core'
 import { useStyles } from './styles'
 import { useNavigate } from 'react-router-dom'
-// import { TextField } from '@renderer/components/Inputs/TextField'
+import { signIn } from '@renderer/api/user-api'
+import { useUser } from '@renderer/store/user-store'
 
 export const RightSide = (): JSX.Element => {
   const classes = useStyles()
   const navigate = useNavigate()
 
-  const handleLogin = (): void => {
+  const handleLogin = async (): Promise<void> => {
+    signIn({ username: 'manager3', password: 'manager3' })
+
     navigate('/')
   }
 

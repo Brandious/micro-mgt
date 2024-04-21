@@ -46,4 +46,25 @@ export class ProjectsController {
   async getTeams(@Param('id') id: string) {
     return this.projectsService.getTeams(id);
   }
+
+  @Put(':projectId/teams/:teamId')
+  async assignTeam(
+    @Param('projectId') projectId: string,
+    @Param('teamId') teamId: string,
+  ) {
+    return this.projectsService.assignTeam(projectId, teamId);
+  }
+
+  @Put(':id/boardId')
+  async updateBoardId(
+    @Param('id') id: string,
+    @Body('boardId') boardId: string,
+  ) {
+    return this.projectsService.updateBoardId(id, boardId);
+  }
+
+  @Put(':id/finalize')
+  async finishProject(@Param('id') id: string) {
+    return this.projectsService.finalizeProject(id);
+  }
 }

@@ -17,10 +17,12 @@ import Typography from '@mui/material/Typography'
 import { CSSObject, Theme, styled, useTheme } from '@mui/material/styles'
 import * as React from 'react'
 
-import { ListItemButton } from '@mui/material'
-import { NavLink } from 'react-router-dom'
+import { CircularProgress, ListItemButton } from '@mui/material'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { ADDITIONAL_ROUTES, ROUTES } from './Routed'
 import BackIcon from '@mui/icons-material/ArrowBackIos'
+import { useState } from 'react'
+import { useUser } from '@renderer/store/user-store'
 const drawerWidth = 240
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -96,13 +98,29 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   })
 )
 
+const mappedRoutes = new Map([
+  ['/', 'Dashboard'],
+  ['/tasks', 'Tasks'],
+  ['/projects', 'Projects'],
+  ['/teams', 'Teams'],
+  ['/users', 'Users'],
+  ['/profile', 'Profile']
+  // add more routes as needed
+])
+
 export default function MiniDrawer({ children }: { children: JSX.Element }): JSX.Element {
+  const [open, setOpen] = useState(false)
+
   const theme = useTheme()
+  const user = useUser()
+  // Inside your component
+  const navigate = useNavigate()
+
+  const { pathname } = useLocation()
 
   const handleBack = (): void => {
     window.history.back()
   }
-  const [open, setOpen] = React.useState(false)
 
   const handleDrawerOpen = (): void => {
     setOpen(true)
@@ -112,6 +130,18 @@ export default function MiniDrawer({ children }: { children: JSX.Element }): JSX
     setOpen(false)
   }
 
+  React.useEffect(() => {
+    if (!user) {
+      navigate('/login')
+    }
+  }, [user, navigate])
+
+  if (!user) return <CircularProgress />
+
+  const filteredRoutes = ROUTES.filter((route) =>
+    route.roles.some((role) => user!.roles.includes(role))
+  )
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -119,7 +149,8 @@ export default function MiniDrawer({ children }: { children: JSX.Element }): JSX
         <Toolbar
           sx={{
             display: 'flex',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            position: 'sticky'
           }}
         >
           <IconButton
@@ -136,7 +167,7 @@ export default function MiniDrawer({ children }: { children: JSX.Element }): JSX
           </IconButton>
 
           <Typography variant="h6" noWrap component="div">
-            MicroManagment
+            {mappedRoutes.get(`/${pathname.split('/')[1]}`) ?? 'MicroManagment'}
           </Typography>
 
           <IconButton color="inherit" aria-label="go back" edge="start" onClick={handleBack}>
@@ -159,7 +190,7 @@ export default function MiniDrawer({ children }: { children: JSX.Element }): JSX
             height: '100%'
           }}
         >
-          {ROUTES.map((route, index) => (
+          {filteredRoutes.map((route, index) => (
             <ListItem
               key={route.name + route.path + index}
               disablePadding

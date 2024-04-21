@@ -95,4 +95,32 @@ export class UsersService {
 
     return await this.usersRepository.save(user);
   }
+
+  async findAll(): Promise<Users[]> {
+    return this.usersRepository.find({
+      select: ['id', 'username', 'email', 'location', 'roles', 'teams'], // include other fields as needed
+    });
+  }
+
+  async findCurrentUser(id: string): Promise<Users> {
+    const user = await this.usersRepository.findOne({
+      where: { id: id },
+      select: [
+        'id',
+        'username',
+        'email',
+        'location',
+        'roles',
+        'teams',
+        'status',
+      ],
+      relations: ['teams', 'teams.project'], // include other fields as needed
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return user;
+  }
 }

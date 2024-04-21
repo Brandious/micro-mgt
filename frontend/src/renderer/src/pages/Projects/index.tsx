@@ -1,21 +1,38 @@
 import { Typography } from '@material-ui/core'
-import { Box, Button } from '@mui/material'
-import { Select } from '@renderer/components/Inputs/Select'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
+import { getProjects } from '@renderer/api/project-api'
+import CreateProjectDialog from '@renderer/components/Dialog/CreateProject'
+import { FabButton } from '@renderer/components/FabButton'
+import List from '@renderer/components/List'
+import { useProject } from '@renderer/store/projects-store'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const Projects = (): JSX.Element => {
+  const [openCreateProject, setOpenCreateProject] = useState(false)
   const navigate = useNavigate()
 
-  const handleClick = (): void => {
-    navigate('/projects/1')
+  const project = useProject()
+
+  useEffect(() => {
+    const get = async () => {
+      await getProjects()
+    }
+    get()
+  }, [])
+
+  const handleClick = (id: string): void => {
+    navigate(`/projects/${id}`)
   }
+
+  const finishedProjects = project && project.filter((el) => el.finished)
+  const openProjects = project && project.filter((el) => !el.finished)
   return (
     <Box
       sx={{
         mt: 2
       }}
     >
-      <Typography variant="h5">Projects </Typography>
       <Box
         sx={{
           mt: 2,
@@ -25,37 +42,63 @@ export const Projects = (): JSX.Element => {
           gap: 8
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1
-          }}
-        >
-          <Box>
-            <Typography variant="body1">Select a project to see details</Typography>
-            <Select
-              defaultValue={'1'}
-              sx={{ flex: 1, minWidth: '200px' }}
-              options={[
-                { value: '1', label: 'Project 1' },
-                { value: '2', label: 'Project 2' }
-              ]}
-            />
-          </Box>
-          <Button variant="contained" sx={{ maxWidth: '200px' }} onClick={handleClick}>
-            Go to project detail
-          </Button>
-        </Box>
+        <Stack>
+          <Accordion>
+            <AccordionSummary>
+              <Typography variant="h6">Open Projects</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stack>
+                {openProjects
+                  ? openProjects.map((el) => (
+                      <List
+                        direction="row"
+                        key={crypto.randomUUID()}
+                        id={el.id}
+                        title={el.name}
+                        desc={el.description}
+                        finished={el.finished}
+                        img={'https://i.pravatar.cc/300'}
+                        onClick={handleClick}
+                        buttonText="Project detail"
+                      />
+                    ))
+                  : null}
+              </Stack>
+            </AccordionDetails>
+          </Accordion>
 
-        <Box>
-          <Typography variant="h6">All Projects</Typography>
-        </Box>
-
-        <Box>
-          <Typography variant="h6">Finished Projects</Typography>
-        </Box>
+          {finishedProjects?.length! > 0 ? (
+            <Accordion>
+              <AccordionSummary>
+                <Typography variant="h6">Finished Projects</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {finishedProjects
+                  ? finishedProjects.map((el) => (
+                      <List
+                        key={crypto.randomUUID()}
+                        id={el.id}
+                        title={el.name}
+                        desc={el.description}
+                        finished={el.finished}
+                        img={'https://i.pravatar.cc/300'}
+                        onClick={handleClick}
+                        buttonText="Project detail"
+                      />
+                    ))
+                  : null}
+              </AccordionDetails>
+            </Accordion>
+          ) : null}
+        </Stack>
       </Box>
+      <FabButton title="Create Project" onClick={() => setOpenCreateProject(true)} />
+      <CreateProjectDialog
+        open={openCreateProject}
+        handleClose={() => setOpenCreateProject(false)}
+        handleOpen={() => setOpenCreateProject(true)}
+      />
     </Box>
   )
 }

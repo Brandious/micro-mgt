@@ -1,8 +1,13 @@
 // import { Box, Typography } from '@material-ui/core'
 
 import { Avatar, Box, Typography } from '@mui/material'
+import { useUser } from '@renderer/store/user-store'
 
 export const UserInfo = (): JSX.Element => {
+  const user = useUser()
+  console.log(user)
+  if (!user) return <Box>Loading</Box>
+
   return (
     <Box
       sx={{
@@ -16,30 +21,25 @@ export const UserInfo = (): JSX.Element => {
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
-        gap: '32px'
+        gap: '8px'
       }}
     >
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'row',
-
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}
       >
-        <Typography variant="h5">User Info </Typography>
-        <Box>
-          <Avatar sx={{ width: 86, height: 86 }} alt="John Doe" src="https://i.pravatar.cc/300" />
-        </Box>
+        <Typography variant="h4">User Info</Typography>
+        <Avatar sx={{ width: 86, height: 86 }} alt="John Doe" src="https://i.pravatar.cc/300" />
       </Box>
 
       <Box>
-        <Typography variant="body2">Name: John Doe</Typography>
-        <Typography variant="body2">Email: john@doe.com </Typography>
-        <Typography variant="body2">Role: Manager</Typography>
-        <Typography variant="body2">Department: Sales</Typography>
-        <Typography variant="body2">Location: New York</Typography>
-        <Typography variant="body2">Team name: CodeBusters</Typography>
+        <Typography variant="h6">Name: {user.username}</Typography>
+        <Typography variant="body2">Email: {user.email} </Typography>
+        <Typography variant="body2">Role: {user.roles}</Typography>
       </Box>
     </Box>
   )

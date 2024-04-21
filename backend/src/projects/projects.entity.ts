@@ -1,5 +1,5 @@
 import { Teams } from '../teams/teams.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Projects {
@@ -9,12 +9,27 @@ export class Projects {
   @Column({ unique: true })
   name: string;
 
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  startDate: Date;
+
+  @Column({
+    nullable: true,
+    type: 'timestamp',
+  })
+  expectedFinishingDate: Date;
+
   @Column()
   description: string;
 
-  @ManyToOne(() => Teams, (teams) => teams.project, { nullable: true })
-  teamsList: Teams[];
-
   @Column({ nullable: true })
-  teamId: string;
+  boardID: string;
+
+  @Column({ default: false })
+  finished: boolean;
+
+  @OneToMany(() => Teams, (teams) => teams.project)
+  teamsList: Teams[];
 }

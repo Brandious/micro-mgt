@@ -3,7 +3,7 @@ import {
   Column,
   Entity,
   ManyToMany,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from '../users/users.entity';
@@ -16,11 +16,12 @@ export class Teams {
   @Column({ unique: true })
   name: string;
 
+  @Column({ nullable: true, default: 'TEAM description' })
+  description: string;
+
   @ManyToMany(() => Users, (user) => user.teams, { cascade: true })
   users: Users[];
 
-  @OneToMany(() => Projects, (projects) => projects.teamsList, {
-    cascade: true,
-  })
-  project: Projects[];
+  @ManyToOne(() => Projects, (projects) => projects.teamsList)
+  project: Projects;
 }

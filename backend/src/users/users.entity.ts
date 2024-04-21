@@ -12,7 +12,11 @@ import {
 } from 'typeorm';
 import { Teams } from '../teams/teams.entity';
 import { Work } from '../work/work.entity';
-
+export enum Status {
+  Online = 'online',
+  Offline = 'offline',
+  Idle = 'idle',
+}
 @Entity({ name: 'users' })
 export class Users {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
@@ -32,6 +36,19 @@ export class Users {
 
   @Column({ nullable: true })
   refreshToken: string;
+
+  @Column({ nullable: true })
+  department: string;
+
+  @Column({ nullable: true })
+  location: string;
+
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.Offline,
+  })
+  status: string;
 
   @Column('text', { array: true, default: [Role.USER] })
   roles: Role[];

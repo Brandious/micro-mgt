@@ -1,21 +1,50 @@
 // import { Box, Typography } from '@material-ui/core'
 
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Divider, Stack, Typography } from '@mui/material'
+import { useUser } from '@renderer/store/user-store'
+import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 
 export const ProjectInfo = (): JSX.Element => {
   const navigate = useNavigate()
+  const user = useUser()
 
-  const handleProjectNavigation = (): void => {
-    navigate('/projects/1')
+  const handleProjectNavigation = (id: string): void => {
+    navigate(`/projects/${id}`)
   }
 
-  const handleTeamNavigation = (): void => {
-    navigate('/teams/1')
+  const handleTeamNavigation = (id: string): void => {
+    navigate(`/teams/${id}`)
   }
+
+  if (!user || !user.teams || !user.teams[0] || !user.teams[0].project)
+    return (
+      <Stack
+        sx={{
+          boxShadow: 1,
+          padding: 2,
+          borderRadius: '12px',
+          bgcolor: '#FFFF99',
+          flexBasis: '100%',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '32px',
+          height: '320px',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+        divider={<Divider />}
+      >
+        <CircularProgress />
+      </Stack>
+    )
+
+  const project = user.teams[0].project
+  const teams = user.teams[0]
 
   return (
-    <Box
+    <Stack
       sx={{
         boxShadow: 1,
         padding: 2,
@@ -27,30 +56,52 @@ export const ProjectInfo = (): JSX.Element => {
         flexDirection: 'column',
         gap: '32px'
       }}
+      divider={<Divider />}
     >
-      <Typography variant="h5">Project Info</Typography>
-      <Box
+      <Stack
         sx={{
-          display: 'grid',
-          gap: '16px',
-          gridTemplateColumns: '1fr 1fr'
+          flexBasis: '100%',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '32px'
         }}
+        divider={<Divider />}
       >
-        <Box>
-          <Typography variant="body1">Project Name: Buggyo.io</Typography>
-          <Typography variant="body1">Project Shortname: bugg</Typography>
-          <Typography variant="body1">Project Manager: John Doe</Typography>
-        </Box>
-        <Box>
-          <Typography variant="body1">Project start date: 01/01/2021</Typography>
-          <Typography variant="body1">Project end date: 01/01/2022</Typography>
-        </Box>
+        <Typography variant="h4">Current Project</Typography>
+        <Box
+          sx={{
+            display: 'grid',
+            gap: '16px',
+            gridTemplateColumns: '1fr 1fr'
+          }}
+        >
+          <Box>
+            <Typography variant="body1">Project Name: {project.name}</Typography>
+            <Typography variant="body1">
+              Project Shortname: {project.name.substring(0, 3)}
+            </Typography>
+            {/* <Typography variant="body1">Project Manager: John Doe</Typography> */}
+          </Box>
 
-        <Box>
-          <Typography variant="body1">Last finished task: bugg-23</Typography>
-          <Typography variant="body1">Last started task: bugg-24</Typography>
+          <Box>
+            <Typography variant="body1">
+              Project start date: {dayjs(project.startDate).format('DD/MM/YYYY')}
+            </Typography>
+            <Typography variant="body1">
+              Project end date:{' '}
+              {project.expectedFinishingDate
+                ? dayjs(project.expectedFinishingDate).format('DD/MM/YYYY')
+                : 'N/a'}
+            </Typography>
+          </Box>
+
+          {/* <Box>
+            <Typography variant="body1">Last finished task: bugg-23</Typography>
+            <Typography variant="body1">Last started task: bugg-24</Typography>
+          </Box> */}
         </Box>
-      </Box>
+      </Stack>
 
       <Box
         sx={{
@@ -58,18 +109,22 @@ export const ProjectInfo = (): JSX.Element => {
           gap: '32px'
         }}
       >
-        <Button variant="contained" sx={{ maxWidth: '200px' }} onClick={handleProjectNavigation}>
+        <Button
+          variant="contained"
+          sx={{ maxWidth: '200px' }}
+          onClick={() => handleProjectNavigation(project.id)}
+        >
           Go to project
         </Button>
         <Button
           variant="contained"
           sx={{ maxWidth: '200px' }}
           color="secondary"
-          onClick={handleTeamNavigation}
+          onClick={() => handleTeamNavigation(teams.id)}
         >
           Go to Team
         </Button>
       </Box>
-    </Box>
+    </Stack>
   )
 }

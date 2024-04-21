@@ -3,14 +3,21 @@ import { BrowserWindow, Menu, Tray, app, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/favicon/favicon-16x16.png?asset'
 import { handleDialogOpen } from './components/dialog'
+import { getUser, loginUser } from './services/auth/auth-service'
+import { endDay, startDay } from './services/work/work-service'
+import { getProjectById, getProjects } from './services/project/project-service'
+import { getTeamById, getTeams } from './services/teams/team-service'
+import { getUsers } from './services/users/user-service'
+import { getTokens } from './config/tokenStore'
 
 let tray: Tray | null = null
+let mainWindow: BrowserWindow | null = null
 
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+  mainWindow = new BrowserWindow({
+    width: 1125,
+    height: 860,
     // minWidth: 900,
     // minHeight: 670,
     // maxHeight: 670,
@@ -28,9 +35,9 @@ function createWindow(): void {
     icon: join(__dirname, '../build/icon.ico')
   })
 
-  console.log(__dirname)
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
+    mainWindow && mainWindow.show()
+    mainWindow && mainWindow.webContents.openDevTools()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -45,6 +52,19 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  let isQuitting = false
+
+  app.on('before-quit', () => {
+    isQuitting = true
+  })
+
+  mainWindow!.on('close', (e) => {
+    if (!isQuitting) {
+      e.preventDefault()
+      mainWindow && mainWindow.hide()
+    }
+  })
 }
 
 // This method will be called when Electron has finished
@@ -66,6 +86,23 @@ app.whenReady().then(() => {
   // Dialog test
   ipcMain.handle('dialog:openDialog', handleDialogOpen)
 
+  ipcMain.handle('api:login', (_, args) => loginUser(args))
+
+  ipcMain.handle('api:getUser', () => getUser())
+
+  ipcMain.handle('api:startDay', (_, args) => startDay(args))
+  ipcMain.handle('api:endDay', () => endDay())
+
+  ipcMain.handle('api:getUsers', () => getUsers())
+
+  ipcMain.handle('api:getTeams', () => getTeams())
+  ipcMain.handle('api:getTeamById', (_, args) => getTeamById(args))
+
+  ipcMain.handle('api:getProjects', () => getProjects())
+  ipcMain.handle('api:getProjectById', (_, args) => getProjectById(args))
+
+  ipcMain.handle('auth:getTokens', () => getTokens())
+
   createTray()
   createWindow()
 
@@ -83,9 +120,15 @@ const createTray = (): void => {
   tray = new Tray(icon)
 
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Open', click: () => createWindow() },
+    { label: 'Open', click: () => mainWindow?.show() },
     { label: 'Website', click: () => shell.openExternal('https://www.electronjs.org') },
-    { label: 'Quit', click: () => app.quit() }
+    {
+      label: 'Quit',
+      click: () => {
+        mainWindow && mainWindow.close()
+        app.quit()
+      }
+    }
   ])
 
   tray.setToolTip('Micro Managment | Online')
@@ -95,9 +138,9 @@ const createTray = (): void => {
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  app.dock.hide()
-})
+// app.on('window-all-closed', () => {
+//   if (process.platform !== 'darwin') app.quit()
+// })
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

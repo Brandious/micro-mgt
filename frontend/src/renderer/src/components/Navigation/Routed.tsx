@@ -11,39 +11,45 @@ export type Routed = {
   path: string
   icon: JSX.Element
   name: string
+  roles: string[]
 }
 
 export const ROUTES: Routed[] = [
   {
     path: '/',
     icon: <DashboardIcon />,
-    name: 'Dashboard'
+    name: 'Dashboard',
+    roles: ['user', 'manager']
   },
   {
     path: '/tasks',
     icon: <TasksIcon />,
-    name: 'Tasks'
+    name: 'Tasks',
+    roles: ['user', 'manager']
   },
   {
     path: '/projects',
     icon: <ProjectIcon />,
-    name: 'Projects'
+    name: 'Projects',
+    roles: ['manager']
   },
   {
     path: '/teams',
     icon: <TeamsIcon />,
-    name: 'Teams'
-  },
-  {
-    path: '/users',
-    icon: <UsersIcon />,
-    name: 'Users'
-  },
-  {
-    path: '/profile',
-    icon: <ProfileIcon />,
-    name: 'Profile'
+    name: 'Teams',
+    roles: ['user', 'manager']
   }
+  // {
+  //   path: '/users',
+  //   icon: <UsersIcon />,
+  //   name: 'Users',
+  //   roles: ['manager']
+  // }
+  // {
+  //   path: '/profile',
+  //   icon: <ProfileIcon />,
+  //   name: 'Profile'
+  // }
 ]
 //
 
@@ -51,16 +57,19 @@ export const ADDITIONAL_ROUTES: Routed[] = [
   {
     path: '/about',
     icon: <AboutIcon />,
-    name: 'About'
+    name: 'About',
+    roles: ['user', 'manager']
   },
   {
     path: '/info',
     icon: <InfoIcon />,
-    name: 'Info'
+    name: 'Info',
+    roles: ['user', 'manager']
   },
   {
     path: '/login',
     icon: <LogoutIcon />,
-    name: 'Logout'
+    name: 'Logout',
+    roles: ['user', 'manager']
   }
 ]

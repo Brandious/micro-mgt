@@ -7,7 +7,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
-import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +25,9 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const tokens = await this.getTokens(user.id, user.username, user.roles);
+    delete user.password;
+
+    const tokens = await this.getTokens(user.id, user);
 
     return {
       ...tokens,
@@ -54,13 +55,12 @@ export class AuthService {
     });
   }
 
-  async getTokens(userId: string, username: string, roles: Role[]) {
+  async getTokens(userId: string, user: any) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
           sub: userId,
-          username,
-          roles,
+          ...user,
         },
         {
           secret: process.env.JWT_SECRET,
@@ -70,8 +70,7 @@ export class AuthService {
       this.jwtService.signAsync(
         {
           sub: userId,
-          username,
-          roles,
+          ...user,
         },
         {
           secret: process.env.JWT_SECRET,
@@ -102,7 +101,7 @@ export class AuthService {
       throw new ForbiddenException('Access Denied');
     }
 
-    const tokens = await this.getTokens(user.id, user.username, user.roles);
+    const tokens = await this.getTokens(user.id, user);
 
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 

@@ -16,13 +16,41 @@ export class TeamsService {
   }
 
   async findOneById(id: string) {
-    return this.teamsRepository.findOne({
-      where: { id },
-      relations: ['users'],
-    });
+    return this.teamsRepository
+      .createQueryBuilder('team')
+      .leftJoin('team.users', 'user')
+      .leftJoin('team.project', 'project')
+      .addSelect([
+        'team',
+        'user.id',
+        'user.username',
+        'user.email',
+        'user.roles',
+        'user.status',
+        'project',
+      ])
+      .where('team.id = :id', { id })
+      .getOne();
   }
 
+  // async getTeams() {
+  //   return this.teamsRepository.find({ relations: ['users'] });
+  // }
+
   async getTeams() {
-    return this.teamsRepository.find({ relations: ['users'] });
+    return this.teamsRepository
+      .createQueryBuilder('team')
+      .leftJoin('team.users', 'user')
+      .leftJoin('team.project', 'project')
+      .addSelect([
+        'team',
+        'user.id',
+        'user.username',
+        'user.email',
+        'user.roles',
+        'user.status',
+        'project',
+      ]) // add the fields you want to select
+      .getMany();
   }
 }

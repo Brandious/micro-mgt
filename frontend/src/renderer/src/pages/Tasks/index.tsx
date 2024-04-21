@@ -13,16 +13,13 @@ export const Tasks = (): JSX.Element => {
         mt: 2
       }}
     >
-      <Typography variant="h5"> Tasks </Typography>
-
       <Box
         sx={{
           mt: 2,
           display: 'flex',
           flexDirection: 'row',
-          // justifyContent: 'space-around',
-          gap: 2,
-          flexWrap: 'wrap'
+          flexWrap: 'wrap',
+          gap: 2
         }}
       >
         <Button variant="contained" sx={{ maxWidth: '200px' }} onClick={handleClick}>

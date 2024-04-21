@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, Get } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Get, Param } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { Teams } from './teams.entity';
 import { HasRoles } from 'src/auth/decorators/has-roles.decorator';
@@ -22,5 +22,10 @@ export class TeamsController {
   @Get()
   async getTeams() {
     return await this.teamsService.getTeams();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.teamsService.findOneById(id);
   }
 }
