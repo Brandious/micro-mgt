@@ -4,7 +4,7 @@ out
 .DS_Store
 *.log*
 keys
-config
+# config
 
 
 ./frontend/node_modules
