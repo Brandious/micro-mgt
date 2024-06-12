@@ -15,9 +15,6 @@ COPY --chown=node:node yarn.lock ./
 # COPY --chown=node:node envSample ./.env
 
 
-
-
-
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN yarn
 
