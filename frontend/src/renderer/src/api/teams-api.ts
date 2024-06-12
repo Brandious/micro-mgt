@@ -22,3 +22,13 @@ export const getTeamById = async (id: string) => {
 
   setTeamById(response.team as any)
 }
+
+export const createTeam = async (payload: { name: string; projectId?: string }) => {
+  const response = (await ipcRenderer.invoke('api:createTeam', payload)) as {
+    status: number
+    message: string
+    team: TeamsData
+  }
+
+  return response
+}

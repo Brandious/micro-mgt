@@ -15,6 +15,8 @@ import { Layout } from '@renderer/pages/layout'
 import { TasksDetail } from '@renderer/pages/Tasks/TasksDetail'
 import { TeamsDetail } from '@renderer/pages/Teams/TeamsDetail'
 import { UsersDetail } from '@renderer/pages/Users/UsersDetail'
+import { Roles } from '@renderer/utils'
+import { ProtectedRoute } from '@renderer/components/ProtectedRoute'
 
 const router = createHashRouter([
   {
@@ -23,7 +25,11 @@ const router = createHashRouter([
     children: [
       {
         path: '',
-        element: <Dashboard />
+        element: (
+          <ProtectedRoute requiredRole={Roles.ALL}>
+            <Dashboard />
+          </ProtectedRoute>
+        )
       }
     ]
   },
@@ -33,11 +39,19 @@ const router = createHashRouter([
     children: [
       {
         path: '',
-        element: <Tasks />
+        element: (
+          <ProtectedRoute requiredRole={Roles.ALL}>
+            <Tasks />
+          </ProtectedRoute>
+        )
       },
       {
         path: ':id',
-        element: <TasksDetail />
+        element: (
+          <ProtectedRoute requiredRole={Roles.ALL}>
+            <TasksDetail />
+          </ProtectedRoute>
+        )
       }
     ]
   },
@@ -47,11 +61,19 @@ const router = createHashRouter([
     children: [
       {
         path: '',
-        element: <Projects />
+        element: (
+          <ProtectedRoute requiredRole={Roles.MANAGER}>
+            <Projects />
+          </ProtectedRoute>
+        )
       },
       {
         path: ':id',
-        element: <ProjectsDetail />
+        element: (
+          <ProtectedRoute requiredRole={Roles.MANAGER}>
+            <ProjectsDetail />
+          </ProtectedRoute>
+        )
       }
     ]
   },
@@ -61,35 +83,56 @@ const router = createHashRouter([
     children: [
       {
         path: '',
-        element: <Teams />
+        element: (
+          <ProtectedRoute requiredRole={Roles.ALL}>
+            <Teams />
+          </ProtectedRoute>
+        )
       },
       {
         path: ':id',
-        element: <TeamsDetail />
+        element: (
+          <ProtectedRoute requiredRole={Roles.ALL}>
+            <TeamsDetail />
+          </ProtectedRoute>
+        )
       }
     ]
   },
   {
     path: 'users',
-    element: <Layout />,
     children: [
       {
         path: '',
-        element: <Users />
+        element: (
+          <ProtectedRoute requiredRole={Roles.MANAGER}>
+            <Users />
+          </ProtectedRoute>
+        )
       },
       {
         path: ':id',
-        element: <UsersDetail />
+        element: (
+          <ProtectedRoute requiredRole={Roles.MANAGER}>
+            <UsersDetail />
+          </ProtectedRoute>
+        )
       }
     ]
   },
   {
     path: 'profile',
-    element: (
-      <Navbar>
-        <Profile />
-      </Navbar>
-    )
+    element: <Layout />,
+    children: [
+      {
+        path: '',
+        element: (
+          <ProtectedRoute requiredRole={Roles.ALL}>
+            <Profile />
+          </ProtectedRoute>
+        )
+      }
+    ]
   },
   {
     path: '/login',

@@ -1,7 +1,7 @@
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { DayStart } from './components/DayStart'
-import { UserInfo } from './components/UserInfo'
 import { ProjectInfo } from './components/ProjectInfo'
+import { UserInfo } from './components/UserInfo'
 
 export const Dashboard = (): JSX.Element => {
   return (

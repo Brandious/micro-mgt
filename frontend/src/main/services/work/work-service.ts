@@ -37,7 +37,8 @@ export const endDay = async () => {
     id: string
   }>
 
-  const endSession = await res
+  // const endSession = await res
+  console.log(res)
 
   return false
 }

@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Stack } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
 import { getUsers } from '@renderer/api/users-api'
 import { FabButton } from '@renderer/components/FabButton'
 import List from '@renderer/components/List'

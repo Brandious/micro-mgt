@@ -1,25 +1,34 @@
 import { Typography } from '@material-ui/core'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
+import { getBoards } from '@renderer/api/board-api'
 import { getProjects } from '@renderer/api/project-api'
 import CreateProjectDialog from '@renderer/components/Dialog/CreateProject'
 import { FabButton } from '@renderer/components/FabButton'
 import List from '@renderer/components/List'
 import { useProject } from '@renderer/store/projects-store'
+import { useUser } from '@renderer/store/user-store'
+import { Roles, hasAccess } from '@renderer/utils'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const Projects = (): JSX.Element => {
   const [openCreateProject, setOpenCreateProject] = useState(false)
+  const [expand, setExpand] = useState(true)
+  const [key, setKey] = useState(crypto.randomUUID())
+
   const navigate = useNavigate()
 
   const project = useProject()
+  // const board = useBoard()
+  const user = useUser()
 
   useEffect(() => {
     const get = async () => {
       await getProjects()
+      await getBoards()
     }
     get()
-  }, [])
+  }, [key])
 
   const handleClick = (id: string): void => {
     navigate(`/projects/${id}`)
@@ -27,6 +36,7 @@ export const Projects = (): JSX.Element => {
 
   const finishedProjects = project && project.filter((el) => el.finished)
   const openProjects = project && project.filter((el) => !el.finished)
+  const managerAccess = hasAccess({ roles: user?.roles! }, Roles.MANAGER)
   return (
     <Box
       sx={{
@@ -42,13 +52,13 @@ export const Projects = (): JSX.Element => {
           gap: 8
         }}
       >
-        <Stack>
-          <Accordion>
+        <Stack gap={4}>
+          <Accordion expanded={expand} onClick={() => setExpand(!expand)}>
             <AccordionSummary>
               <Typography variant="h6">Open Projects</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Stack>
+              <Stack gap={4}>
                 {openProjects
                   ? openProjects.map((el) => (
                       <List
@@ -93,12 +103,23 @@ export const Projects = (): JSX.Element => {
           ) : null}
         </Stack>
       </Box>
-      <FabButton title="Create Project" onClick={() => setOpenCreateProject(true)} />
-      <CreateProjectDialog
-        open={openCreateProject}
-        handleClose={() => setOpenCreateProject(false)}
-        handleOpen={() => setOpenCreateProject(true)}
+      <FabButton
+        title="Create Project"
+        onClick={() => setOpenCreateProject(true)}
+        additionalStyles={{
+          position: 'fixed',
+          bottom: '16px',
+          right: '16px'
+        }}
       />
+      {managerAccess ? (
+        <CreateProjectDialog
+          open={openCreateProject}
+          handleClose={() => setOpenCreateProject(false)}
+          handleOpen={() => setOpenCreateProject(true)}
+          setKey={() => setKey(crypto.randomUUID())}
+        />
+      ) : null}
     </Box>
   )
 }

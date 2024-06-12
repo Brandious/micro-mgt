@@ -29,3 +29,17 @@ export const getTeamById = async (payload: { id: string }) => {
     team: res
   }
 }
+
+export const createTeam = async (payload: { name: string; projectId?: string }) => {
+  const tokens = getTokens()
+  const res = (await Request('teams', tokens.accessToken, 'POST', undefined, payload)) as {
+    id: string
+    name: string
+  }
+
+  return {
+    status: 200,
+    message: 'Success',
+    team: res
+  }
+}

@@ -1,12 +1,10 @@
-import DashboardIcon from '@mui/icons-material/Dashboard'
-import TasksIcon from '@mui/icons-material/Task'
 import ProjectIcon from '@mui/icons-material/AccountTree'
+import DashboardIcon from '@mui/icons-material/Dashboard'
 import TeamsIcon from '@mui/icons-material/Groups'
-import UsersIcon from '@mui/icons-material/Group'
-import ProfileIcon from '@mui/icons-material/ManageAccounts'
-import AboutIcon from '@mui/icons-material/Info'
 import InfoIcon from '@mui/icons-material/HelpCenter'
+import AboutIcon from '@mui/icons-material/Info'
 import LogoutIcon from '@mui/icons-material/Logout'
+import TasksIcon from '@mui/icons-material/Task'
 export type Routed = {
   path: string
   icon: JSX.Element

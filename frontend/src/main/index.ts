@@ -5,10 +5,18 @@ import icon from '../../resources/favicon/favicon-16x16.png?asset'
 import { handleDialogOpen } from './components/dialog'
 import { getUser, loginUser } from './services/auth/auth-service'
 import { endDay, startDay } from './services/work/work-service'
-import { getProjectById, getProjects } from './services/project/project-service'
-import { getTeamById, getTeams } from './services/teams/team-service'
-import { getUsers } from './services/users/user-service'
+import {
+  assignBoardToProject,
+  assignTeamToProject,
+  createProject,
+  finalizeProject,
+  getProjectById,
+  getProjects
+} from './services/project/project-service'
+import { createTeam, getTeamById, getTeams } from './services/teams/team-service'
+import { assignUserToTeam, getUsers } from './services/users/user-service'
 import { getTokens } from './config/tokenStore'
+import { getBoardIssuesById, getBoards } from './services/board/board-api'
 
 let tray: Tray | null = null
 let mainWindow: BrowserWindow | null = null
@@ -18,14 +26,9 @@ function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1125,
     height: 860,
-    // minWidth: 900,
-    // minHeight: 670,
-    // maxHeight: 670,
-    // maxWidth: 900,
+
     show: false,
-    // frame: false,
-    // titleBarStyle: 'hidden',
-    // autoHideMenuBar: true,
+
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -94,12 +97,21 @@ app.whenReady().then(() => {
   ipcMain.handle('api:endDay', () => endDay())
 
   ipcMain.handle('api:getUsers', () => getUsers())
+  ipcMain.handle('api:assignUserToTeam', (_, args) => assignUserToTeam(args))
 
   ipcMain.handle('api:getTeams', () => getTeams())
   ipcMain.handle('api:getTeamById', (_, args) => getTeamById(args))
+  ipcMain.handle('api:createTeam', (_, args) => createTeam(args))
 
   ipcMain.handle('api:getProjects', () => getProjects())
   ipcMain.handle('api:getProjectById', (_, args) => getProjectById(args))
+  ipcMain.handle('api:createProject', (_, args) => createProject(args))
+  ipcMain.handle('api:assignTeamToProject', (_, args) => assignTeamToProject(args))
+
+  ipcMain.handle('api:getBoard', () => getBoards())
+  ipcMain.handle('api:getBoardIssuesById', (_, args) => getBoardIssuesById(args))
+  ipcMain.handle('api:assignBoardToProject', (_, args) => assignBoardToProject(args))
+  ipcMain.handle('api:finalizeProject', (_, args) => finalizeProject(args))
 
   ipcMain.handle('auth:getTokens', () => getTokens())
 

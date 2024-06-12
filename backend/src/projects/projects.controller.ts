@@ -6,14 +6,21 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Projects } from './projects.entity';
+import { HasRoles } from 'src/auth/decorators/has-roles.decorator';
+import { Role } from 'src/enums/role.enum';
+import { AccessTokenGuard } from 'src/auth/strategies/accessToken.guard';
+import { RolesGuard } from 'src/auth/strategies/roles.guard';
 
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
+  @HasRoles(Role.MANAGER)
+  @UseGuards(AccessTokenGuard, RolesGuard)
   @Get()
   async findAll() {
     return this.projectsService.findAll();

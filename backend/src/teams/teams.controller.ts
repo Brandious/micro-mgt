@@ -17,7 +17,7 @@ export class TeamsController {
     return await this.teamsService.createTeam(teamData);
   }
 
-  @HasRoles(Role.MANAGER)
+  @HasRoles(Role.MANAGER, Role.USER)
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Get()
   async getTeams() {

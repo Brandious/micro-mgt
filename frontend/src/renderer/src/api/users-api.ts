@@ -15,3 +15,11 @@ export const getUsers = async () => {
 
   setUsers(response as UsersData[])
 }
+
+
+
+export const assignUserToTeam = async (payload: { userId: string; teamIds: string[] }) => {
+  const response = await ipcRenderer.invoke('api:assignUserToTeam', payload)
+  
+  return response
+}

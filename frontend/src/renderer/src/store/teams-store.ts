@@ -9,7 +9,14 @@ import { UserSchema } from './user-store'
 export const TeamSchema = z.object({
   id: z.string(),
   name: z.string(),
-  users: z.array(UserSchema)
+  users: z.array(UserSchema),
+  project: z.object({
+    id: z.string(),
+    name: z.string(),
+    description: z.string(),
+    finished: z.boolean(),
+    teams: z.array(z.string())
+  })
 })
 
 export type TeamsData = z.infer<typeof TeamSchema>

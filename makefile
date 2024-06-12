@@ -1,4 +1,3 @@
-
 run-dev:
 	@echo "Starting dev..."
 	docker compose -f backend/docker-compose.yml up -d --remove-orphans
@@ -9,3 +8,7 @@ run-prod-down:
 
 createdb:
 	docker exec -it database createdb --username=postgres --owner=postgres micro-mgt
+
+
+
+

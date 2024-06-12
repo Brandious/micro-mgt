@@ -17,3 +17,22 @@ export const getUsers = async () => {
     users: res
   }
 }
+
+export const assignUserToTeam = async (payload: { userId: string; teamIds: string[] }) => {
+  const tokens = getTokens()
+  const res = await Request(
+    `users/${payload.userId}/teams/`,
+    tokens.accessToken,
+    'PUT',
+    undefined,
+    {
+      teamIds: payload.teamIds
+    }
+  )
+
+  return {
+    status: 200,
+    message: 'success',
+    teams: res
+  }
+}

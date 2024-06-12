@@ -1,12 +1,10 @@
-import * as React from 'react'
+import { Button, Chip, Stack } from '@mui/material'
+import Avatar from '@mui/material/Avatar'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import Divider from '@mui/material/Divider'
-import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
-import Avatar from '@mui/material/Avatar'
+import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
-import { Button, Chip, Stack } from '@mui/material'
 import { grey } from '@mui/material/colors'
 
 const StatusColor = new Map([
@@ -23,6 +21,7 @@ export default function AlignItemsList({
   img,
   buttonText,
   buttonColor,
+  buttonDisabled = false,
   onClick,
   direction = 'row',
   status
@@ -34,6 +33,7 @@ export default function AlignItemsList({
   img: string
   buttonText: string
   buttonColor?: string
+  buttonDisabled?: boolean
   direction?: 'column' | 'row'
   status?: 'online' | 'idle' | 'offline' | 'undefined'
   onClick: (id: string) => void
@@ -94,6 +94,7 @@ export default function AlignItemsList({
           color={(buttonColor as 'inherit' | 'primary' | 'secondary') || 'primary'}
           sx={{ maxWidth: '200px' }}
           onClick={() => onClick(id)}
+          disabled={buttonDisabled}
         >
           {buttonText}
         </Button>

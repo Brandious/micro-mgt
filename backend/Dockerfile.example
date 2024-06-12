@@ -11,15 +11,9 @@ WORKDIR /usr/src/app
 # A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
 # Copying this first prevents re-running npm install on every code change.
 COPY --chown=node:node package*.json ./
-COPY --chown=node:node yarn.lock ./
-# COPY --chown=node:node envSample ./.env
-
-
-
-
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
-RUN yarn
+RUN npm ci
 
 # Bundle app source
 COPY --chown=node:node . .
@@ -43,13 +37,13 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 COPY --chown=node:node . .
 
 # Run the build command which creates the production bundle
-RUN yarn build
+RUN npm run build
 
 # Set NODE_ENV environment variable
 ENV NODE_ENV production
 
 # Running `npm ci` removes the existing node_modules directory and passing in --only=production ensures that only the production dependencies are installed. This ensures that the node_modules directory is as optimized as possible
-RUN yarn --only=production
+RUN npm ci --only=production && npm cache clean --force
 
 USER node
 

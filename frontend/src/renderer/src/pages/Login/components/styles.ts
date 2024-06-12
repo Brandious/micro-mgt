@@ -57,5 +57,9 @@ export const useStyles = makeStyles(() => ({
     '&:focus': {
       background: 'rgba(0, 128, 0, 1)'
     }
+  },
+  errorText: {
+    color: 'red',
+    fontStyle: 'italic'
   }
 }))

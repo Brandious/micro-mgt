@@ -1,7 +1,9 @@
 // import { Box, Typography } from '@material-ui/core'
 
-import { Box, Button, CircularProgress, Divider, Stack, Typography } from '@mui/material'
+import { Box, Button, Divider, Stack, Typography } from '@mui/material'
+import { Loading } from '@renderer/components/Loading'
 import { useUser } from '@renderer/store/user-store'
+import { Roles, hasAccess } from '@renderer/utils'
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 
@@ -16,6 +18,8 @@ export const ProjectInfo = (): JSX.Element => {
   const handleTeamNavigation = (id: string): void => {
     navigate(`/teams/${id}`)
   }
+
+  const managerAccess = hasAccess({ roles: user?.roles! }, Roles.MANAGER)
 
   if (!user || !user.teams || !user.teams[0] || !user.teams[0].project)
     return (
@@ -36,7 +40,7 @@ export const ProjectInfo = (): JSX.Element => {
         }}
         divider={<Divider />}
       >
-        <CircularProgress />
+        <Loading />
       </Stack>
     )
 
@@ -109,13 +113,15 @@ export const ProjectInfo = (): JSX.Element => {
           gap: '32px'
         }}
       >
-        <Button
-          variant="contained"
-          sx={{ maxWidth: '200px' }}
-          onClick={() => handleProjectNavigation(project.id)}
-        >
-          Go to project
-        </Button>
+        {managerAccess ? (
+          <Button
+            variant="contained"
+            sx={{ maxWidth: '200px' }}
+            onClick={() => handleProjectNavigation(project.id)}
+          >
+            Go to project
+          </Button>
+        ) : null}
         <Button
           variant="contained"
           sx={{ maxWidth: '200px' }}

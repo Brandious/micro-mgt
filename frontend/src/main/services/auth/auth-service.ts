@@ -1,17 +1,22 @@
-import { finished } from 'stream'
+import { RequestType } from './../../config/axios'
 import { getTokens } from './../../config/tokenStore'
 import { Request } from '../../config/axios'
 import { saveTokens } from '../../config/tokenStore'
 
 export const loginUser = async (payload: { username: string; password: string }) => {
   try {
-    const res = (await Request('auth/signin', '', 'POST', undefined, payload)) as Promise<{
+    const res = (await Request(
+      'auth/signin',
+      '',
+      'POST' as RequestType,
+      undefined,
+      payload
+    )) as Promise<{
       accessToken: string
       refreshToken: string
     }>
 
     const tokens = await res
-
     if (!tokens)
       return {
         status: 401,
@@ -28,6 +33,7 @@ export const loginUser = async (payload: { username: string; password: string })
       user: user
     }
   } catch (err) {
+    console.log({ err })
     return {
       status: 401,
       message: 'Unauthorized'
@@ -61,6 +67,11 @@ export const getUser = async () => {
       }
     ]
   }
+  if (!res)
+    return {
+      status: 500,
+      message: 'Something went wrong'
+    }
 
   return {
     status: 200,

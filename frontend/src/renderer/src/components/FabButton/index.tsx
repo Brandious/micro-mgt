@@ -1,19 +1,26 @@
 import { Fab } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { blue, green } from '@mui/material/colors'
+import { CSSProperties } from 'react'
 
 export const FabButton = ({
   title,
   variant = 'green',
-  onClick
+  onClick,
+  additionalStyles
 }: {
   title: string
   variant?: 'blue' | 'green'
   onClick?: () => void
+  additionalStyles?: CSSProperties
 }) => {
   const variantColor = variant === 'blue' ? { ...fabBlueStyle } : { ...fabGreenStyle }
   return (
-    <Fab variant="extended" sx={{ ...fabStyle, ...variantColor }} onClick={onClick}>
+    <Fab
+      variant="extended"
+      sx={{ ...fabStyle, ...variantColor, ...additionalStyles }}
+      onClick={onClick}
+    >
       <AddIcon />
       {title}
     </Fab>

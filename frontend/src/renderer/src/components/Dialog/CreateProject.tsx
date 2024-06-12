@@ -6,31 +6,52 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import { useForm } from 'react-hook-form'
+import { createProject } from '@renderer/api/project-api'
+import { MenuItem } from '@mui/material'
+import { useBoard } from '@renderer/store/board-store'
+
+type CreateProjectInput = {
+  name: string
+  description: string
+  board?: string
+}
 
 export default function CreateProjectDialog({
   open,
   handleClose,
-  handleOpen
+
+  setKey
 }: {
   open: boolean
   handleClose: () => void
-  handleOpen: () => void
+  handleOpen?: () => void
+  setKey: () => void
 }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError
+  } = useForm<CreateProjectInput>()
+
+  const board = useBoard()
+  const onSubmit = async (data: CreateProjectInput): Promise<void> => {
+    const res = await createProject(data)
+    if (res.status !== 200) setError('root', { type: 'manual', message: 'Error creating project' })
+
+    setKey()
+    handleClose()
+  }
+  const issues = board?.values
+
   return (
     <React.Fragment>
       <Dialog
         open={open}
-        onClose={handleClose}
         PaperProps={{
           component: 'form',
-          onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-            event.preventDefault()
-            const formData = new FormData(event.currentTarget)
-            const formJson = Object.fromEntries((formData as any).entries())
-            const email = formJson.email
-            console.log(email)
-            handleClose()
-          }
+          onSubmit: handleSubmit(onSubmit)
         }}
       >
         <DialogTitle>Create Project</DialogTitle>
@@ -39,44 +60,56 @@ export default function CreateProjectDialog({
             Please enter project name, project description and assign project board to it!
           </DialogContentText>
           <TextField
+            {...register('name', {
+              required: 'Name is required'
+            })}
             autoFocus
-            required
             margin="dense"
-            id="name"
+            id={crypto.randomUUID()}
             name="name"
             label="Project name"
             type="text"
             fullWidth
             variant="standard"
+            error={Boolean(errors.name)}
+            helperText={errors.name ? errors.name.message : ''}
           />
           <TextField
             autoFocus
-            required
+            {...register('description', {
+              required: 'Description is required'
+            })}
             margin="dense"
-            id="description"
-            name="description"
-            label="Project description"
+            id={crypto.randomUUID()}
+            label="Description"
             type="text"
             fullWidth
             variant="standard"
+            error={Boolean(errors.description)}
+            helperText={errors.description ? errors.description.message : ''}
           />
 
           <TextField
             autoFocus
             select
-            required
+            {...register('board')}
             margin="dense"
             id="board"
             name="board"
             label="Project board"
             type="text"
             fullWidth
-            variant="standard"
-          />
+          >
+            {issues?.map((el) => <MenuItem value={el.id}>{el?.location.displayName}</MenuItem>)}
+          </TextField>
+
+          {errors.root ? <DialogContentText>{errors.root.message}</DialogContentText> : null}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" variant="contained">
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

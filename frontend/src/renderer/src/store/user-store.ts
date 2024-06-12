@@ -5,9 +5,9 @@ import { useStore } from 'zustand'
 import { useStoreWithEqualityFn } from 'zustand/traditional'
 import { z } from 'zod'
 
-const roles = z.enum(['manager', 'user'])
+// const roles = z.enum(['manager', 'user'])
 
-type Role = z.infer<typeof roles>
+// type Role = z.infer<typeof roles>
 
 // export const UserSchema = z.object({
 //   userId: z.string(),
@@ -60,6 +60,7 @@ type UserStore = {
 
   actions: {
     setUser: (user: UserData) => void
+    refreshUser: () => void
     logout: () => void
   }
 }
@@ -69,10 +70,20 @@ const userStore = createStore<UserStore>()((set) => ({
 
   actions: {
     setUser: async (user: UserData) => {
+      try {
+        const res = await window.api.getUser()
+        if (res) {
+          set({ user: res.user })
+        } else set({ user })
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    refreshUser: async () => {
       const res = await window.api.getUser()
       if (res) {
         set({ user: res.user })
-      } else set({ user })
+      }
     },
     logout: () => set({ user: null })
   }

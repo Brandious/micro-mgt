@@ -2,8 +2,8 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import MenuIcon from '@mui/icons-material/Menu'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
-import CssBaseline from '@mui/material/CssBaseline'
 import Box from '@mui/material/Box'
+import CssBaseline from '@mui/material/CssBaseline'
 
 import Divider from '@mui/material/Divider'
 import MuiDrawer from '@mui/material/Drawer'
@@ -17,12 +17,13 @@ import Typography from '@mui/material/Typography'
 import { CSSObject, Theme, styled, useTheme } from '@mui/material/styles'
 import * as React from 'react'
 
-import { CircularProgress, ListItemButton } from '@mui/material'
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { ADDITIONAL_ROUTES, ROUTES } from './Routed'
 import BackIcon from '@mui/icons-material/ArrowBackIos'
-import { useState } from 'react'
+import { ListItemButton } from '@mui/material'
 import { useUser } from '@renderer/store/user-store'
+import { useState } from 'react'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Loading } from '../Loading'
+import { ADDITIONAL_ROUTES, ROUTES } from './Routed'
 const drawerWidth = 240
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -113,7 +114,7 @@ export default function MiniDrawer({ children }: { children: JSX.Element }): JSX
 
   const theme = useTheme()
   const user = useUser()
-  // Inside your component
+
   const navigate = useNavigate()
 
   const { pathname } = useLocation()
@@ -136,7 +137,7 @@ export default function MiniDrawer({ children }: { children: JSX.Element }): JSX
     }
   }, [user, navigate])
 
-  if (!user) return <CircularProgress />
+  if (!user) return <Loading />
 
   const filteredRoutes = ROUTES.filter((route) =>
     route.roles.some((role) => user!.roles.includes(role))

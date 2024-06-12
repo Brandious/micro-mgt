@@ -5,6 +5,7 @@ import { useStore } from 'zustand'
 import { useStoreWithEqualityFn } from 'zustand/traditional'
 import { z } from 'zod'
 import { TeamSchema } from './teams-store'
+import { createProject } from '@renderer/api/project-api'
 
 export const ProjectSchema = z.object({
   id: z.string(),
@@ -23,6 +24,7 @@ type ProjectStore = {
   actions: {
     setProject: (project: ProjectData[]) => void
     setProjectById: (project: ProjectData) => void
+    createProject: (payload: { name: string; description: string }) => void
   }
 }
 
@@ -40,6 +42,10 @@ const projectStore = createStore<ProjectStore>()((set) => ({
 
     setProjectById: async (project: ProjectData) => {
       set({ projectById: project })
+    },
+
+    createProject: async (payload: { name: string; description: string }) => {
+      await createProject(payload)
     }
   }
 }))
